@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id               String        @id @default(uuid())
+  name             String
+  birthYear        Int
+  contact          String
+  emergencyContact String
+  history          String?
+  appointments     Appointment[]
+  createdAt        DateTime      @default(now())
+
+  @@unique([name, contact])
+}
+
+model Operation {
+  id           String                 @id @default(uuid())
+  name         String                 @unique
+  costClinic   Float                  @default(0)
+  costBill     Float                  @default(0)
+  duration     Int                    @default(0)
+  appointments AppointmentOperation[]
+}
+
+model Appointment {
+  id         String                 @id @default(uuid())
+  patientId  String
+  date       DateTime
+  status     Status                 @default(SCHEDULED)
+  notes      String?
+  operations AppointmentOperation[]
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @updatedAt
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model AppointmentOperation {
+  id            String      @id @default(uuid())
+  appointmentId String
+  operationId   String
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  operation     Operation   @relation(fields: [operationId], references: [id], onDelete: Cascade)
+}
+
+enum Status {
+  SCHEDULED
+  CANCELLED
+  DONE
+}
