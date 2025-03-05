@@ -11,16 +11,17 @@ interface Entries {
 
 interface NavbarProps {
   entries: Array<Entries>;
+  navbarColor?: string;
 }
 
-export function Navbar({ entries }: NavbarProps) {
+export function Navbar({ entries, navbarColor = "white" }: NavbarProps) {
   // Get page url
   const url = "";
   const defaultClass =
-    "text-sm font-medium transition-colors hover:text-primary";
-  const activeClass = "text-primary";
+    "text-sm font-medium transition-colors hover:text-primary text-white";
+  const activeClass = "text-primary text-white";
   return (
-    <div className="hidden flex-col md:flex">
+    <div className="hidden flex-col md:flex" style={{ backgroundColor: navbarColor }}>
       <div className="border-b">
         <div className="flex h-16 items-center justify-between px-4">
           <div></div>

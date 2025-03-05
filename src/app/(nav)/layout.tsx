@@ -11,8 +11,20 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <section>
-      <Navbar entries={entries} />
-      {children}
+      <Navbar entries={entries} navbarColor="#5C7893" />
+      <div>
+        <main
+          className="flex flex-col justify-center items-center min-h-screen "
+          style={{
+            backgroundImage: `url(/static/splash.jpg)`,
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="relative w-full h-[100vh] flex flex-col bg-black bg-opacity-50">
+            {children}
+          </div>
+        </main>
+      </div>
     </section>
   );
 }
