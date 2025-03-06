@@ -3,7 +3,7 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-    const param = await params;
+  const param = await params;
   return (
     <>
       <h1>Patient Info Here</h1>
