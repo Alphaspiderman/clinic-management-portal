@@ -34,3 +34,8 @@ export async function createOperation(data: {
   });
   revalidatePath("/appointments");
 }
+
+export async function deleteAllOperations(): Promise<void> {
+  await prisma.operation.deleteMany();
+  revalidatePath("/appointments");
+}
