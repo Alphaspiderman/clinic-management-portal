@@ -22,8 +22,7 @@ export async function createPatient(data: Partial<Patient>): Promise<Patient> {
     !data.name ||
     !data.birthYear ||
     !data.contact ||
-    !data.emergencyContact ||
-    !data.history
+    !data.emergencyContact
   ) {
     throw new Error("Missing required fields to create a patient");
   }
