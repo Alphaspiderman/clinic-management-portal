@@ -21,9 +21,12 @@ import { useState } from "react";
 
 import { useEffect } from "react";
 
+import PatientFormDialog from "@/components/custom/PatientFormDialog";
+
 export default function Page({}: {}) {
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,27 +36,16 @@ export default function Page({}: {}) {
     fetchData();
   }, []);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSubmit(formData: FormData) {
     setLoading(true);
 
-    const formData = new FormData(event.currentTarget);
-
-    try {
-      await createPatient({
-        name: formData.get("name") as string,
-        contact: formData.get("contact") as string,
-        birthYear: Number(formData.get("birthYear")),
-        emergencyContact: formData.get("emergencyContact") as string,
-      });
-    } catch (error) {
-      alert("Error creating patient: " + error);
-      setLoading(false);
-      return;
-    }
-
+    await createPatient({
+      name: formData.get("name") as string,
+      contact: formData.get("contact") as string,
+      birthYear: Number(formData.get("birthYear")),
+      emergencyContact: formData.get("emergencyContact") as string,
+    });
     setLoading(false);
-    alert("Patient Created!");
     setPatients(await getPatients());
   }
 
@@ -61,52 +53,13 @@ export default function Page({}: {}) {
     <>
       <div className="p-10">
         <div className="container">
-          <h1>Patient Management</h1>
+          <h1 className="text-white text-center text-xl">Patient Management</h1>
 
-          <form onSubmit={handleSubmit} className=" p-5">
-            <div className="flex flex-col gap-4">
-              <Input
-                name="name"
-                placeholder="Name"
-                required
-                className="border p-2 m-2 w-full bg-black bg-opacity-50"
-              />
-              <Input
-                name="contact"
-                placeholder="Contact"
-                required
-                className="border p-2 m-2 w-full bg-black bg-opacity-50"
-              />
-              <Input
-                name="birthYear"
-                placeholder="Birth Year"
-                type="number"
-                required
-                className="border p-2 m-2 w-full bg-black bg-opacity-50"
-              />
-              <Input
-                name="emergencyContact"
-                placeholder="Emergency Contact"
-                required
-                className="border p-2 m-2 w-full bg-black bg-opacity-50"
-              />
-            </div>
-            <div className="flex items-center justify-around py-5">
-              <Button type="submit" disabled={loading} variant="default">
-                {loading ? "Saving..." : "Create Patient"}
-              </Button>
-              <Button
-                type="button"
-                onClick={() => {
-                  const form = document.querySelector("form");
-                  if (form) form.reset();
-                }}
-                variant="destructive"
-              >
-                Clear Form
-              </Button>
-            </div>
-          </form>
+          <div className="flex justify-end mb-4">
+            <Button onClick={() => setDialogOpen(true)} variant="default">
+              Create Patient
+            </Button>
+          </div>
 
           <div className="text-white bg-black bg-opacity-50">
             {patients.length > 0 ? (
@@ -163,6 +116,12 @@ export default function Page({}: {}) {
             )}
           </div>
         </div>
+        <PatientFormDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          onSubmit={handleSubmit}
+          loading={loading}
+        />
       </div>
     </>
   );
