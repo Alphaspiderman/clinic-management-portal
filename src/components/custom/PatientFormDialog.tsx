@@ -1,29 +1,33 @@
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createPatient } from "@/lib/actions/patients";
 
 interface PatientFormDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (formData: FormData) => void;
   loading: boolean;
 }
 
 export default function PatientFormDialog({
   open,
   onClose,
-  onSubmit,
   loading,
 }: PatientFormDialogProps) {
-  function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     try {
-      onSubmit(formData);
+      await createPatient({
+        name: formData.get("name") as string,
+        contact: formData.get("contact") as string,
+        birthYear: Number(formData.get("birthYear")),
+        emergencyContact: formData.get("emergencyContact") as string,
+      });
     } catch (error) {
-      alert("Error creating patient: " + error);
+      alert("Error creating patient");
+      return;
     }
-
     onClose();
   }
 

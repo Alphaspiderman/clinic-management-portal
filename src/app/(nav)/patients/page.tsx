@@ -3,7 +3,6 @@
 import { getPatients, createPatient } from "@/lib/actions/patients";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -35,19 +34,6 @@ export default function Page({}: {}) {
     }
     fetchData();
   }, []);
-
-  async function handleSubmit(formData: FormData) {
-    setLoading(true);
-
-    await createPatient({
-      name: formData.get("name") as string,
-      contact: formData.get("contact") as string,
-      birthYear: Number(formData.get("birthYear")),
-      emergencyContact: formData.get("emergencyContact") as string,
-    });
-    setLoading(false);
-    setPatients(await getPatients());
-  }
 
   return (
     <>
@@ -118,8 +104,10 @@ export default function Page({}: {}) {
         </div>
         <PatientFormDialog
           open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          onSubmit={handleSubmit}
+          onClose={async () => {
+            setDialogOpen(false);
+            setPatients(await getPatients());
+          }}
           loading={loading}
         />
       </div>
