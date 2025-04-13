@@ -14,13 +14,15 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
       <Navbar entries={entries} navbarColor="#5C7893" />
       <div>
         <main
-          className="flex flex-col justify-center items-center min-h-screen "
+          className="flex flex-col justify-center items-center min-h-screen"
           style={{
             backgroundImage: `url(/static/splash.jpg)`,
             backgroundSize: "cover",
+            backgroundAttachment: "fixed",
+            backgroundPosition: "center",
           }}
         >
-          <div className="relative w-full h-[100vh] flex flex-col bg-black bg-opacity-50">
+          <div className="relative w-full min-h-screen flex flex-col bg-black bg-opacity-50 overflow-y-auto">
             {children}
           </div>
         </main>
