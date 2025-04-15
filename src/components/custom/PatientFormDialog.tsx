@@ -1,7 +1,28 @@
 import { Dialog, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { createPatient } from "@/lib/actions/patients";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const patientSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  contact: z.string().min(10, "Contact is required"),
+  birthYear: z.coerce
+    .number()
+    .min(1900, "Birth year must be valid")
+    .max(new Date().getFullYear(), "Birth year must be valid"),
+  emergencyContact: z.string().min(10, "Emergency contact is required"),
+});
 
 interface PatientFormDialogProps {
   open: boolean;
@@ -14,59 +35,96 @@ export default function PatientFormDialog({
   onClose,
   loading,
 }: PatientFormDialogProps) {
-  async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const form = useForm({
+    resolver: zodResolver(patientSchema),
+  });
+
+  const onSubmit = async (data: z.infer<typeof patientSchema>) => {
     try {
-      await createPatient({
-        name: formData.get("name") as string,
-        contact: formData.get("contact") as string,
-        birthYear: Number(formData.get("birthYear")),
-        emergencyContact: formData.get("emergencyContact") as string,
-      });
-    } catch (error) {
+      await createPatient(data);
+      onClose();
+    } catch {
       alert("Error creating patient");
-      return;
     }
-    onClose();
-  }
+  };
+
+  if (!open) return null;
 
   return (
-    open && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <Dialog open={open}>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <Dialog open={open}>
+        <Form {...form}>
           <form
-            onSubmit={handleFormSubmit}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="m-5 p-5 bg-black bg-opacity-70 rounded-md min-w-[300px] w-full max-w-md"
           >
             <DialogTitle className="text-2xl text-center text-white">
               Create Patient
             </DialogTitle>
             <div className="flex flex-col gap-4 items-center">
-              <Input
+              <FormField
+                control={form.control}
                 name="name"
-                placeholder="Name"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
+                render={({ field }) => (
+                  <FormItem className="w-[300px]">
+                    <FormLabel className="text-white">Name</FormLabel>
+                    <Input
+                      {...field}
+                      placeholder="Name"
+                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Input
+              <FormField
+                control={form.control}
                 name="contact"
-                placeholder="Contact"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
+                render={({ field }) => (
+                  <FormItem className="w-[300px]">
+                    <FormLabel className="text-white">Contact</FormLabel>
+                    <Input
+                      {...field}
+                      placeholder="Contact"
+                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Input
+              <FormField
+                control={form.control}
                 name="birthYear"
-                placeholder="Birth Year"
-                type="number"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
+                render={({ field }) => (
+                  <FormItem className="w-[300px]">
+                    <FormLabel className="text-white">Birth Year</FormLabel>
+                    <Input
+                      {...field}
+                      placeholder="Birth Year"
+                      type="number"
+                      min="1900"
+                      max={new Date().getFullYear()}
+                      step="1"
+                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Input
+              <FormField
+                control={form.control}
                 name="emergencyContact"
-                placeholder="Emergency Contact"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
+                render={({ field }) => (
+                  <FormItem className="w-[300px]">
+                    <FormLabel className="text-white">Emergency Contact</FormLabel>
+                    <Input
+                      {...field}
+                      placeholder="Emergency Contact"
+                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
             <div className="flex items-center justify-around py-5">
@@ -83,8 +141,8 @@ export default function PatientFormDialog({
               </Button>
             </div>
           </form>
-        </Dialog>
-      </div>
-    )
+        </Form>
+      </Dialog>
+    </div>
   );
 }
