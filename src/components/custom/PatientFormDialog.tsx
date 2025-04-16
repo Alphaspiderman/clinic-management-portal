@@ -1,4 +1,9 @@
-import { Dialog, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { createPatient } from "@/lib/actions/patients";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,6 +35,8 @@ interface PatientFormDialogProps {
   loading: boolean;
 }
 
+type PatientFormValues = z.infer<typeof patientSchema>;
+
 export default function PatientFormDialog({
   open,
   onClose,
@@ -37,97 +44,88 @@ export default function PatientFormDialog({
 }: PatientFormDialogProps) {
   const form = useForm({
     resolver: zodResolver(patientSchema),
+    defaultValues: {
+      name: "",
+      contact: "",
+      birthYear: new Date().getFullYear(),
+      emergencyContact: "",
+    },
   });
 
-  const onSubmit = async (data: z.infer<typeof patientSchema>) => {
+  async function onSubmit(values: PatientFormValues) {
     try {
-      await createPatient(data);
+      await createPatient(values);
       onClose();
     } catch {
       alert("Error creating patient");
     }
-  };
+  }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <Dialog open={open}>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create Patient</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="m-5 p-5 bg-black bg-opacity-70 rounded-md min-w-[300px] w-full max-w-md"
-          >
-            <DialogTitle className="text-2xl text-center text-white">
-              Create Patient
-            </DialogTitle>
-            <div className="flex flex-col gap-4 items-center">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="w-[300px]">
-                    <FormLabel className="text-white">Name</FormLabel>
-                    <Input
-                      {...field}
-                      placeholder="Name"
-                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="contact"
-                render={({ field }) => (
-                  <FormItem className="w-[300px]">
-                    <FormLabel className="text-white">Contact</FormLabel>
-                    <Input
-                      {...field}
-                      placeholder="Contact"
-                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="birthYear"
-                render={({ field }) => (
-                  <FormItem className="w-[300px]">
-                    <FormLabel className="text-white">Birth Year</FormLabel>
-                    <Input
-                      {...field}
-                      placeholder="Birth Year"
-                      type="number"
-                      min="1900"
-                      max={new Date().getFullYear()}
-                      step="1"
-                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="emergencyContact"
-                render={({ field }) => (
-                  <FormItem className="w-[300px]">
-                    <FormLabel className="text-white">Emergency Contact</FormLabel>
-                    <Input
-                      {...field}
-                      placeholder="Emergency Contact"
-                      className="border p-2 m-2 bg-black bg-opacity-50 w-full"
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex items-center justify-around py-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <Input {...field} placeholder="Name" />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact</FormLabel>
+                  <Input {...field} placeholder="Contact" />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="birthYear"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Birth Year</FormLabel>
+                  <Input
+                    {...field}
+                    placeholder="Birth Year"
+                    type="number"
+                    min="1900"
+                    max={new Date().getFullYear()}
+                    step="1"
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="emergencyContact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Emergency Contact</FormLabel>
+                  <Input {...field} placeholder="Emergency Contact" />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end space-x-2">
+              <Button type="button" onClick={onClose} variant="destructive">
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={loading}
@@ -136,13 +134,10 @@ export default function PatientFormDialog({
               >
                 {loading ? "Saving..." : "Create Patient"}
               </Button>
-              <Button type="button" onClick={onClose} variant="destructive">
-                Cancel
-              </Button>
             </div>
           </form>
         </Form>
-      </Dialog>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
