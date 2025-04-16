@@ -1,7 +1,32 @@
-import { Dialog, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { createOperation } from "@/lib/actions/operations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const operationSchema = z.object({
+  name: z.string().min(1, "Operation name is required"),
+  costClinic: z.coerce
+    .number()
+    .min(0, "Cost to clinic must be a positive number"),
+  costBill: z.coerce.number().min(0, "Bill cost must be a positive number"),
+  duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
+});
 
 interface OperationFormDialogProps {
   open: boolean;
@@ -9,69 +34,94 @@ interface OperationFormDialogProps {
   loading: boolean;
 }
 
+type OperationFormValues = z.infer<typeof operationSchema>;
+
 export default function OperationFormDialog({
   open,
   onClose,
   loading,
 }: OperationFormDialogProps) {
-  async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const form = useForm<OperationFormValues>({
+    resolver: zodResolver(operationSchema),
+    defaultValues: {
+      name: "",
+      costClinic: 0,
+      costBill: 0,
+      duration: 0,
+    },
+  });
+
+  async function onSubmit(values: OperationFormValues) {
     try {
-      await createOperation({
-        name: formData.get("name") as string,
-        costClinic: parseInt(formData.get("costClinic") as string),
-        costBill: parseInt(formData.get("costBill") as string),
-        duration: parseInt(formData.get("duration") as string),
-      });
-    } catch (error) {
+      await createOperation(values);
+      onClose();
+    } catch {
       alert("Error creating operation");
-      return;
     }
-    onClose();
   }
 
+  if (!open) return null;
+
   return (
-    open && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <Dialog open={open}>
-          <form
-            onSubmit={handleFormSubmit}
-            className="m-5 p-5 bg-black bg-opacity-70 rounded-md min-w-[300px] w-full max-w-md"
-          >
-            <DialogTitle className="text-2xl text-center text-white">
-              Create Operation
-            </DialogTitle>
-            <div className="flex flex-col gap-4 items-center">
-              <Input
-                name="name"
-                placeholder="Operation Name"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
-              />
-              <Input
-                name="costClinic"
-                placeholder="Cost to Clinic"
-                type="number"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
-              />
-              <Input
-                name="costBill"
-                placeholder="Bill Cost"
-                type="number"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
-              />
-              <Input
-                name="duration"
-                placeholder="Approx. Duration (minutes)"
-                type="number"
-                required
-                className="border p-2 m-2 w-5/6 bg-black bg-opacity-50"
-              />
-            </div>
-            <div className="flex items-center justify-around py-5">
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create Operation</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Operation Name</FormLabel>
+                  <Input placeholder="Operation Name" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="costClinic"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cost to Clinic</FormLabel>
+                  <Input
+                    type="number"
+                    placeholder="Cost to Clinic"
+                    {...field}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="costBill"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bill Cost</FormLabel>
+                  <Input type="number" placeholder="Bill Cost" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="duration"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Approx. Duration (minutes)</FormLabel>
+                  <Input type="number" placeholder="Duration" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end space-x-2">
+              <Button type="button" variant="destructive" onClick={onClose}>
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={loading}
@@ -80,13 +130,10 @@ export default function OperationFormDialog({
               >
                 {loading ? "Saving..." : "Create Operation"}
               </Button>
-              <Button type="button" onClick={onClose} variant="destructive">
-                Cancel
-              </Button>
             </div>
           </form>
-        </Dialog>
-      </div>
-    )
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
