@@ -20,12 +20,15 @@ import { useState } from "react";
 
 import { useEffect } from "react";
 
+import { useRouter } from "next/navigation";
+
 import PatientFormDialog from "@/components/custom/PatientFormDialog";
 
 export default function Page({}: {}) {
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -55,6 +58,7 @@ export default function Page({}: {}) {
                 <TableHead className="text-white">Contact</TableHead>
                 <TableHead className="text-white">Birth Year</TableHead>
                 <TableHead className="text-white">Emergency Contact</TableHead>
+                <TableHead className="text-white">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -64,6 +68,16 @@ export default function Page({}: {}) {
                   <TableCell>{patient.contact}</TableCell>
                   <TableCell>{patient.birthYear}</TableCell>
                   <TableCell>{patient.emergencyContact}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      onClick={() => router.push(`/patients/${patient.id}`)}
+                      className="text-black"
+                      disabled={loading}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -80,10 +94,12 @@ export default function Page({}: {}) {
                   <TableHead className="text-white">
                     Emergency Contact
                   </TableHead>
+                  <TableHead className="text-white">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
+                  <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
