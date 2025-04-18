@@ -17,6 +17,14 @@ export async function getPatientByContact(
   });
 }
 
+export async function getPatientById(id: string): Promise<Patient | null> {
+  return prisma.patient.findUnique({
+    where: {
+      id: id,
+    },
+  });
+}
+
 export async function createPatient(data: Partial<Patient>): Promise<Patient> {
   if (
     !data.name ||
