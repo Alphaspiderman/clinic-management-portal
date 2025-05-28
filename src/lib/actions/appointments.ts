@@ -42,12 +42,18 @@ export async function getAppointmentsForPatient(
 }
 
 export async function createAppointment(data: {
-  date: Date;
   patientId: string;
-  operationId: string;
-}): Promise<void> {
-  await prisma.appointment.create({
-    data,
+  date: Date;
+  status?: Status;
+  notes?: string;
+}): Promise<Appointment> {
+  return await prisma.appointment.create({
+    data: {
+      patientId: data.patientId,
+      date: data.date,
+      status: data.status || "SCHEDULED",
+      notes: data.notes || "",
+    },
   });
 }
 
