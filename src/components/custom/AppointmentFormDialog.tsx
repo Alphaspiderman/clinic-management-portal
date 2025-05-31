@@ -9,6 +9,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -105,11 +113,19 @@ export default function AppointmentFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <select {...field} className="form-select">
-                    <option value="SCHEDULED">Scheduled</option>
-                    <option value="CANCELLED">Cancelled</option>
-                    <option value="DONE">Done</option>
-                  </select>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SCHEDULED">Scheduled</SelectItem>
+                      <SelectItem value="CANCELLED">Cancelled</SelectItem>
+                      <SelectItem value="DONE">Done</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
