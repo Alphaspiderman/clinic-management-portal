@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -26,6 +28,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandItem,
+} from "@/components/ui/command";
+import { useState, useEffect } from "react";
+import { getPatientsByPartialContact } from "@/lib/actions/patients";
+import type { Patient } from "@prisma/client";
 
 const appointmentSchema = z.object({
   patientId: z.string().min(1, "Patient ID is required"),
@@ -59,6 +76,18 @@ export default function AppointmentFormDialog({
     },
   });
 
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState("");
+
+  useEffect(() => {
+    async function fetchPatients() {
+      const data = await getPatientsByPartialContact(searchTerm);
+      setPatients(data);
+    }
+    fetchPatients();
+  }, [searchTerm]);
+
   async function onSubmit(values: AppointmentFormValues) {
     try {
       await createAppointment({ ...values });
@@ -83,8 +112,41 @@ export default function AppointmentFormDialog({
               name="patientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Patient ID</FormLabel>
-                  <Input placeholder="Patient ID" {...field} />
+                  <FormLabel>Patient (Search by Contact)</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Input
+                        placeholder="Search for a patient by contact"
+                        value={selectedPatient}
+                        onInput={(e) =>
+                          setSearchTerm((e.target as HTMLInputElement).value)
+                        }
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <Command>
+                        <CommandInput
+                          placeholder="Type to search by contact..."
+                          onInput={(e) =>
+                            setSearchTerm((e.target as HTMLInputElement).value)
+                          }
+                        />
+                        <CommandList>
+                          {patients.map((patient) => (
+                            <CommandItem
+                              key={patient.id}
+                              onSelect={() => {
+                                setSelectedPatient(patient.name);
+                                field.onChange(patient.id);
+                              }}
+                            >
+                              {patient.name} ({patient.contact})
+                            </CommandItem>
+                          ))}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}

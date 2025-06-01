@@ -17,6 +17,30 @@ export async function getPatientByContact(
   });
 }
 
+export async function getPatientsByName(name: string): Promise<Patient[]> {
+  return prisma.patient.findMany({
+    where: {
+      name: {
+        contains: name,
+        mode: "insensitive",
+      },
+    },
+  });
+}
+
+export async function getPatientsByPartialContact(
+  partialContact: string
+): Promise<Patient[]> {
+  return prisma.patient.findMany({
+    where: {
+      contact: {
+        contains: partialContact,
+        mode: "insensitive",
+      },
+    },
+  });
+}
+
 export async function getPatientById(id: string): Promise<Patient | null> {
   return prisma.patient.findUnique({
     where: {
