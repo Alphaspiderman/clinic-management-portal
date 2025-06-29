@@ -11,7 +11,9 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <section>
-      <Navbar entries={entries} navbarColor="#5C7893" />
+      <div className="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-40 backdrop-blur-md">
+        <Navbar entries={entries} navbarColor="transparent" />
+      </div>
       <div>
         <main
           className="flex flex-col justify-center items-center min-h-screen"
@@ -22,7 +24,7 @@ export default function NavLayout({ children }: { children: React.ReactNode }) {
             backgroundPosition: "center",
           }}
         >
-          <div className="relative w-full min-h-screen flex flex-col bg-black bg-opacity-50 overflow-y-auto">
+          <div className="relative w-full min-h-screen flex flex-col bg-black bg-opacity-50 overflow-y-auto pt-16">
             {children}
           </div>
         </main>
