@@ -48,7 +48,7 @@ export default function Page({}: {}) {
         </Button>
       </div>
 
-      <div className="text-white bg-black bg-opacity-50">
+      <div className="text-white">
         {patients.length > 0 ? (
           <Table>
             <TableCaption>List of Patients</TableCaption>

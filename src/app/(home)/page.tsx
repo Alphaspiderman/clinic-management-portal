@@ -17,7 +17,7 @@ export default function Home() {
           backgroundSize: "cover",
         }}
       >
-        <div className="relative w-full h-[100vh] flex flex-col justify-center items-center bg-black bg-opacity-50">
+        <div className="relative w-full h-[100vh] flex flex-col justify-center items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>

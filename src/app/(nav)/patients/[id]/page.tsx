@@ -21,7 +21,7 @@ export default async function Page({
   return (
     <>
       <h1>Patient Info</h1>
-      <div className="text-white bg-black bg-opacity-50 p-4 rounded-lg">
+      <div className="text-white p-4 rounded-lg">
         <h2 className="text-xl font-bold">{patient?.name}</h2>
         <p>Contact: {patient?.contact}</p>
         <p>Birth Year: {patient?.birthYear}</p>

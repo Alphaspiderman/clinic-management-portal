@@ -101,9 +101,9 @@ export default function AppointmentFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="bg-gray-900 text-white border border-gray-700 shadow-lg">
         <DialogHeader>
-          <DialogTitle>Create Appointment</DialogTitle>
+          <DialogTitle className="text-white">Create Appointment</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -112,10 +112,13 @@ export default function AppointmentFormDialog({
               name="patientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Patient (Search by Contact)</FormLabel>
+                  <FormLabel className="text-gray-300">
+                    Patient (Search by Contact)
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Input
+                        className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
                         placeholder="Search for a patient by contact"
                         value={selectedPatient}
                         onInput={(e) =>
@@ -123,9 +126,10 @@ export default function AppointmentFormDialog({
                         }
                       />
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent className="bg-gray-900 text-white border border-gray-700">
                       <Command>
                         <CommandInput
+                          className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
                           placeholder="Type to search by contact..."
                           onInput={(e) =>
                             setSearchTerm((e.target as HTMLInputElement).value)
@@ -135,6 +139,7 @@ export default function AppointmentFormDialog({
                           {patients.map((patient) => (
                             <CommandItem
                               key={patient.id}
+                              className="hover:bg-gray-800"
                               onSelect={() => {
                                 setSelectedPatient(patient.name);
                                 field.onChange(patient.id);
@@ -147,7 +152,7 @@ export default function AppointmentFormDialog({
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormMessage />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -156,16 +161,17 @@ export default function AppointmentFormDialog({
               name="date"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date</FormLabel>
+                  <FormLabel className="text-gray-300">Date</FormLabel>
                   <Input
                     type="date"
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
                     placeholder="Date"
                     value={
                       field.value ? field.value.toISOString().split("T")[0] : ""
                     }
                     onChange={(e) => field.onChange(new Date(e.target.value))}
                   />
-                  <FormMessage />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -174,21 +180,33 @@ export default function AppointmentFormDialog({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel className="text-gray-300">Status</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-800 text-white border-gray-700">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SCHEDULED">Scheduled</SelectItem>
-                      <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                      <SelectItem value="DONE">Done</SelectItem>
+                    <SelectContent className="bg-gray-900 text-white border-gray-700">
+                      <SelectItem
+                        value="SCHEDULED"
+                        className="hover:bg-gray-800"
+                      >
+                        Scheduled
+                      </SelectItem>
+                      <SelectItem
+                        value="CANCELLED"
+                        className="hover:bg-gray-800"
+                      >
+                        Cancelled
+                      </SelectItem>
+                      <SelectItem value="DONE" className="hover:bg-gray-800">
+                        Done
+                      </SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -197,21 +215,30 @@ export default function AppointmentFormDialog({
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes</FormLabel>
-                  <Input placeholder="Notes" {...field} />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Notes</FormLabel>
+                  <Input
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
+                    placeholder="Notes"
+                    {...field}
+                  />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="destructive" onClick={onClose}>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={onClose}
+                className="bg-red-700 hover:bg-red-800 text-white"
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
                 variant="default"
-                className="bg-green-500 hover:bg-green-600"
+                className="bg-green-700 hover:bg-green-800 text-white"
               >
                 {loading ? "Saving..." : "Create Appointment"}
               </Button>

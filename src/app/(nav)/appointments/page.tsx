@@ -37,7 +37,7 @@ export default function Page({}: {}) {
         </Button>
       </div>
 
-      <div className="text-white bg-black bg-opacity-50">
+      <div className="text-white">
         {appointments.length > 0 ? (
           <Table>
             <TableCaption>List of Appointments</TableCaption>

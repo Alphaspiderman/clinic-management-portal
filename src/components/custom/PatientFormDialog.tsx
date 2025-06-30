@@ -65,9 +65,9 @@ export default function PatientFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="bg-gray-900 text-white border border-gray-700 shadow-lg">
         <DialogHeader>
-          <DialogTitle>Create Patient</DialogTitle>
+          <DialogTitle className="text-white">Create Patient</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -76,9 +76,9 @@ export default function PatientFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <Input {...field} placeholder="Name" />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Name</FormLabel>
+                  <Input className="bg-gray-800 text-white border-gray-700 placeholder-gray-500" {...field} placeholder="Name" />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -87,9 +87,9 @@ export default function PatientFormDialog({
               name="contact"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contact</FormLabel>
-                  <Input {...field} placeholder="Contact" />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Contact</FormLabel>
+                  <Input className="bg-gray-800 text-white border-gray-700 placeholder-gray-500" {...field} placeholder="Contact" />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -98,8 +98,9 @@ export default function PatientFormDialog({
               name="birthYear"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Birth Year</FormLabel>
+                  <FormLabel className="text-gray-300">Birth Year</FormLabel>
                   <Input
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
                     {...field}
                     placeholder="Birth Year"
                     type="number"
@@ -107,7 +108,7 @@ export default function PatientFormDialog({
                     max={new Date().getFullYear()}
                     step="1"
                   />
-                  <FormMessage />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -116,21 +117,21 @@ export default function PatientFormDialog({
               name="emergencyContact"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Emergency Contact</FormLabel>
-                  <Input {...field} placeholder="Emergency Contact" />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Emergency Contact</FormLabel>
+                  <Input className="bg-gray-800 text-white border-gray-700 placeholder-gray-500" {...field} placeholder="Emergency Contact" />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
             <div className="flex justify-end space-x-2">
-              <Button type="button" onClick={onClose} variant="destructive">
+              <Button type="button" onClick={onClose} variant="destructive" className="bg-red-700 hover:bg-red-800 text-white">
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
                 variant="default"
-                className="bg-green-500 hover:bg-green-600"
+                className="bg-green-700 hover:bg-green-800 text-white"
               >
                 {loading ? "Saving..." : "Create Patient"}
               </Button>

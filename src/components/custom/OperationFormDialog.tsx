@@ -64,9 +64,9 @@ export default function OperationFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="bg-gray-900 text-white border border-gray-700 shadow-lg">
         <DialogHeader>
-          <DialogTitle>Create Operation</DialogTitle>
+          <DialogTitle className="text-white">Create Operation</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -75,9 +75,13 @@ export default function OperationFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Operation Name</FormLabel>
-                  <Input placeholder="Operation Name" {...field} />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Operation Name</FormLabel>
+                  <Input
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
+                    placeholder="Operation Name"
+                    {...field}
+                  />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -86,13 +90,14 @@ export default function OperationFormDialog({
               name="costClinic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cost to Clinic</FormLabel>
+                  <FormLabel className="text-gray-300">Cost to Clinic</FormLabel>
                   <Input
                     type="number"
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
                     placeholder="Cost to Clinic"
                     {...field}
                   />
-                  <FormMessage />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -101,9 +106,14 @@ export default function OperationFormDialog({
               name="costBill"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bill Cost</FormLabel>
-                  <Input type="number" placeholder="Bill Cost" {...field} />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">Bill Cost</FormLabel>
+                  <Input
+                    type="number"
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
+                    placeholder="Bill Cost"
+                    {...field}
+                  />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -112,21 +122,33 @@ export default function OperationFormDialog({
               name="duration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Approx. Duration (minutes)</FormLabel>
-                  <Input type="number" placeholder="Duration" {...field} />
-                  <FormMessage />
+                  <FormLabel className="text-gray-300">
+                    Approx. Duration (minutes)
+                  </FormLabel>
+                  <Input
+                    type="number"
+                    className="bg-gray-800 text-white border-gray-700 placeholder-gray-500"
+                    placeholder="Duration"
+                    {...field}
+                  />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="destructive" onClick={onClose}>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={onClose}
+                className="bg-red-700 hover:bg-red-800 text-white"
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={loading}
                 variant="default"
-                className="bg-green-500 hover:bg-green-600"
+                className="bg-green-700 hover:bg-green-800 text-white"
               >
                 {loading ? "Saving..." : "Create Operation"}
               </Button>
