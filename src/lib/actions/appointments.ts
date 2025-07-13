@@ -21,6 +21,52 @@ export async function getAppointments(
   });
 }
 
+export async function countAppointmentsInFuture(): Promise<number> {
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return await prisma.appointment.count({
+    where: {
+      date: {
+        gte: yesterday,
+      },
+    },
+  });
+}
+
+export async function getAppointmentsInFuture(
+  take: number = 0,
+  skip: number = 0
+): Promise<Appointment[]> {
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return await prisma.appointment.findMany({
+    where: {
+      date: {
+        gte: yesterday,
+      },
+    },
+    orderBy: {
+      date: "asc",
+    },
+    take: take > 0 ? take : undefined,
+    skip: skip > 0 ? skip : undefined,
+  });
+}
+
+export async function getPastAppointments(): Promise<Appointment[]> {
+  var today = new Date();
+  return await prisma.appointment.findMany({
+    where: {
+      date: {
+        lt: today,
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+}
+
 export async function getAppointmentsForDate(
   date: Date
 ): Promise<Appointment[]> {
