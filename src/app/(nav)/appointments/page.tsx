@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { useState, useEffect } from "react";
 import AppointmentFormDialog from "@/components/custom/AppointmentFormDialog";
+import { useRouter } from "next/navigation";
 
 const PAGE_SIZE = 10;
 
@@ -25,6 +26,7 @@ export default function Page({}: {}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -68,7 +70,13 @@ export default function Page({}: {}) {
               </TableHeader>
               <TableBody>
                 {appointments.map((appointment) => (
-                  <TableRow key={appointment.id}>
+                  <TableRow
+                    key={appointment.id}
+                    className="cursor-pointer hover:bg-gray-600"
+                    onClick={() =>
+                      router.push(`/appointments/${appointment.id}`)
+                    }
+                  >
                     <TableCell>{appointment.patientId}</TableCell>
                     <TableCell>
                       {new Date(appointment.date).toLocaleDateString()}
